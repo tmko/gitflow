@@ -106,6 +106,27 @@ if [ $? -ne 0 ]; then
 fi
 
 ########################## Note ###########################
+# At this point, both 2 branches should have the same content
+# It also true in the remote orgin
+# Check this assertion 
+############################################################
+
+differentInOrgin=$(git log --oneline --graph --decorate --left-right --boundary --date-order origin/$featureBranch...origin/$tempBranch)
+if [ "$differentInOrgin" ]; then
+	echo "The remote branches are different origin/$featureBranch origin/$tempBranch"
+	echo "They "
+fi 
+
+currentBranch=$(git status | grep 'On branch' | awk -F' ' '{print $3}')
+
+# Check current branch.  Switch to case insensitive
+if [ "$currentBranch" != "$tempBranch" ]]; then
+	echo "Unexpected branch"
+	exit
+fi
+
+
+########################## Note ###########################
 # At this point, the temp Branch is found in local and remote
 # The original feature banch can be deleted
 # Rename the temp branch to the feature branch
